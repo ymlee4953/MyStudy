@@ -6,34 +6,35 @@
 
     - cluster information and server IP
 
-          export K8S_CLUSTER_NAME=auto_cluster
+          export K8S_CLUSTER_NAME=auto_cluster_ab
+          export CLUSTER_DOMAIN=ab.k8s.demo.ymlee
           export K8S_VERSION=v1.20.5
           export POD_SUBNET=192.168.0.0/16
           export SERVICE_SUBNET=20.96.0.0/16          
 
-          export ETCD_1=10.168.180.175
-          export ETCD_2=10.168.180.209
-          export ETCD_3=10.168.180.130
+          export ETCD_1=10.168.180.135
+          export ETCD_2=10.168.180.220
+          export ETCD_3=10.168.180.186
 
-          export LB_1=10.168.180.155
+          export LB_1=10.168.180.173
 
-          export MASTER_1=10.168.180.246
-          export MASTER_2=10.168.180.196
-          export MASTER_3=10.168.180.249
+          export MASTER_1=10.168.180.162
+          export MASTER_2=10.168.180.170
+          export MASTER_3=10.168.180.137
 
-          export LB_2=10.168.180.247
+          export LB_2=10.168.180.195
 
-          export INGRESS_1=10.168.180.142
-          export INGRESS_2=10.168.180.200
-          export INGRESS_3=10.168.180.143
+          export INGRESS_1=10.168.180.169
+          export INGRESS_2=10.168.180.254
+          export INGRESS_3=10.168.180.158
 
-          export INFRA_1=10.168.180.149
+          export INFRA_1=10.168.180.235
 
-          export WORKER_1=10.168.180.225
-          export WORKER_2=10.168.180.190
-          export WORKER_3=10.168.180.164
+          export WORKER_1=10.168.180.148
+          export WORKER_2=10.168.180.160
+          export WORKER_3=10.168.180.212
 
-          export BASTION_0=10.168.180.165
+          export BASTION_0=10.168.180.214
           export NEXUS_0=10.168.180.184
 
 2. Create Directoy for new Cluster
@@ -43,8 +44,8 @@
     - cluster information and server IP
 
           mkdir -p $HOME/ansible-playbooks
-          mkdir -p $HOME/k8s-clusters/${K8S_CLUSTER_NAME}/configurations
-
+          mkdir -p $HOME/configurations
+          mkdir -p $HOME/files
 
 
 3. Create Ansible Inventory file
@@ -131,3 +132,40 @@
 
           cat ssh-key-copy.txt
           rm -rf ssh-key-copy.txt
+
+
+### **Step 4: Create Password Yaml**
+-  I
+  - d
+    - f
+
+1. ddd
+
+    1.1. ddd 
+
+    - Configure EPEL repository and check 
+
+          yum install python-passlib
+
+
+          mkdir -p ~/ansible-playbooks/initialize
+
+          cat <<EOF> ~/ansible-playbooks/initialize/change-password.yml
+          ---
+          - hosts: etcd:master:worker:ingress:infra:lb*
+            become: yes
+            tasks:
+              - name: Change user password
+                user:
+                  name: root
+                  update_password: always
+                  password: "{{ newpassword|password_hash('sha512') }}"
+          EOF
+
+          cat ~/ansible-playbooks/initialize/change-password.yml
+
+    - change password
+
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/change-password.yml --extra-vars newpassword=12345678
+         
+    - Done
