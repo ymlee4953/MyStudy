@@ -205,7 +205,7 @@
             tasks:
               - name: start containerd
                 command: 
-                  systemctl start containerd
+                  systemctl restart containerd
               - name: enable containerd
                 command: 
                   systemctl enable containerd
