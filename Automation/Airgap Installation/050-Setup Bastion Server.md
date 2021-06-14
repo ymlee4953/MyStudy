@@ -1,8 +1,7 @@
-2. init 
-  -  
-    - 
-      -  
-## For etcdadm
+# **050. Setup Bastion Server**
+  
+---  
+## **For etcdadm**
 
 1. Base Package Installation to Bastion Server
 
@@ -57,11 +56,11 @@
           
           
 ---
-## For haproxy
+## **For haproxy**
 
-2. Download and Copy the Installation File
+4. Download and Copy the Installation File
 
-    2.1 Download Installation File to Bastion Server
+    4.1 Download Installation File to Bastion Server
     - **At the Bastion Server**
     - HA Proxy 서버는 Air-gap 환경임으로 Bastion 을 통해 설치 파일을 다운로드
       
@@ -75,13 +74,13 @@
 
 
 ---
-## For Calico
+## **For Calico**
 
-9. Install CNI : Calico
+5. Install CNI : Calico
     - CNI : Calico
     - Typha 적용
 
-    9.1 Download and copy the yaml file for the Calico Typha
+    5.1 Download and copy the yaml file for the Calico Typha
     - Download the yaml File
     - **At the Bastion server**
      

@@ -1,3 +1,8 @@
+# **030.Setup Environment**
+
+- at the ansible Server
+
+---
 
 
 1. Declare Cluster Information
@@ -5,6 +10,7 @@
     1.1. export variable with value
 
     - cluster information and server IP
+    - At the ansible Server
 
           export K8S_CLUSTER_NAME=auto_cluster_ab
           export CLUSTER_DOMAIN=ab.k8s.demo.ymlee
@@ -35,21 +41,23 @@
           export WORKER_3=10.168.180.212
 
           export BASTION_0=10.168.180.214
-          export NEXUS_0=10.168.180.184
+          export NEXUS_0=10.168.180.184          
+
 
 2. Create Directoy for new Cluster
 
     2.1. Create Directory
 
-    - cluster information and server IP
+    - At the ansible Server
 
           mkdir -p $HOME/ansible-playbooks
           mkdir -p $HOME/configurations
           mkdir -p $HOME/files
 
-
 3. Create Ansible Inventory file
 
+    3.1 Ansible Inventory file
+    
     - Ansible Inventory file
 
           cat <<EOF> k8s-cluster-hosts
@@ -94,21 +102,25 @@
           EOF
 
           cat k8s-cluster-hosts
-          cp k8s-cluster-hosts k8s-cluster-hosts-$(date '+%Y%m%d'-'%H%M%S')
 
-4. Generate SSH Key and set login without password
+          cp k8s-cluster-hosts k8s-cluster-hosts-$(date '+%Y%m%d'-'%H%M%S')  
 
-    4.1 Generate SSH-Key 
+4. Set login without password
+
+    4.1 Generate SSH-Key (If already generated, skip)
     
-    - Generate SSH-Key 
-
+    - Generate SSH-Key
+    - At the ansible Server
+    
           ssh-keygen
 
           cat /root/.ssh/id_rsa.pub
 
 
     4.2 Copy SSH-Key to Server
-    - Copy
+
+    - make script for each server
+    - At the ansible Server
 
           cat <<EOF> ssh-key-copy.txt
           ssh-copy-id -i ~/.ssh/id_rsa.pub root@${ETCD_1}
@@ -131,19 +143,16 @@
           EOF
 
           cat ssh-key-copy.txt
+
           rm -rf ssh-key-copy.txt
 
 
-### **Step 4: Create Password Yaml**
--  I
-  - d
-    - f
+5. Change Password for manual login to server
 
-1. ddd
+    1.1. Create ansible playbook to change server password
 
-    1.1. ddd 
-
-    - Configure EPEL repository and check 
+    - prepare python-passlib
+    - At the ansible Server
 
           yum install python-passlib
 
@@ -166,6 +175,6 @@
 
     - change password
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/change-password.yml --extra-vars newpassword=12345678
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/change-password.yml --extra-vars newpassword='new password'
          
     - Done

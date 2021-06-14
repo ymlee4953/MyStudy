@@ -1,22 +1,10 @@
-# **004 - Ansible Setup**
+# **120 - Setup LB-1**
 
-## **OS update**
-- update CentOS to latest
-  d
+1. Install haproxy
+  
+    1.1 install Base package for haproxy
 
-## **Environment**
-- d
-  - d
-
-## **Steps** 
-
-### **Step 1: OS update**
--  update CentOS to latest
-  - d
-    - f
-
-         
-    - Done
+    - for LB-1, LB-2 both
 
           mkdir -p ~/ansible-playbooks/LB
 
@@ -40,9 +28,12 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/LB/base_package_for_haproxy.yml
 
-    - d
+    1.2 copy haproxy file from bastion server
+
+    - for LB-1, LB-2 both
 
           cat <<EOF> ~/ansible-playbooks/LB/copy_haproxy.tar.gz_to_LB_servers.yml
+          # copy_haproxy.tar.gz_to_LB_servers.yml
           - hosts: BASTION-0
             become: true
             tasks:
@@ -58,9 +49,12 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/LB/copy_haproxy.tar.gz_to_LB_servers.yml
       
-    - d
+    1.3 Install haproxy
+
+    - for LB-1, LB-2 both
 
           cat <<EOF> ~/ansible-playbooks/LB/install_haproxy.yml
+          # install_haproxy.yml
           - hosts: lb*
             become: true
             tasks: 
@@ -117,9 +111,9 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/LB/install_haproxy.yml
 
+    1.4. prepare haproxy.cfg at the ansible server
 
-
-    - prepare haproxy.cfg at the ansible server
+    - for LB-1
 
           mkdir -p ~/configurations/LB/etc/haproxy
 
@@ -176,11 +170,9 @@
 
           cat ~/configurations/LB-1/etc/haproxy/haproxy.cfg
 
+    1.5. Start haproxy
 
-
-    - 
-      -  
-
+    - for LB-1
 
           cat <<EOF> ~/ansible-playbooks/LB/start_haproxy.yml
           # start_haproxy.yml

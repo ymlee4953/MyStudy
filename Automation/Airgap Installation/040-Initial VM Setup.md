@@ -1,10 +1,10 @@
-### **Step 4: OS update **
+# **040. Setup to use Nexus Server**
 
-1. ddd
+1. Setup Nexus Configuration
 
-    1.1. ddd 
+    1.1. Create Configuration file
 
-    - Configure EPEL repository and check 
+    - at ansible server
 
           mkdir -p ~/configurations/etc/yum.repos.d
 
@@ -20,12 +20,15 @@
 
           cat ~/configurations/etc/yum.repos.d/nexus.repo
 
+    1.2. Copy Configuration file to each server
+
+    - at ansible Server
 
           cat <<EOF> ~/ansible-playbooks/initialize/set_yum_repo.yml
           # set_yum_repo.yml
           ---
           - hosts: etcd:master:worker:ingress:infra:lb*
-            become: ture
+            become: true
             tasks:
               - name: copy airgap YUM Repo File
                 copy:
