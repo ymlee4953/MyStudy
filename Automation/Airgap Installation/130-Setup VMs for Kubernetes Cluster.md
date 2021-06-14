@@ -1,9 +1,49 @@
-2. init 
-  -  
-    - 
-      -  
+# **130. Setup VMs for Kubernetes Cluster**
 
-    - containerd
+1. Setup Nexus Configuration
+
+    1.1. Create Configuration file
+
+    - at ansible server
+
+          mkdir -p ~/configurations/etc/yum.repos.d
+
+          cat <<EOF> ~/configurations/etc/yum.repos.d/nexus.repo
+
+          [nexus]
+          name=Nexus Proxy
+          baseurl=http://${NEXUS_0}:8081/repository/yum-group/
+          enabled=1
+          gpgcheck=0
+
+          EOF
+
+          cat ~/configurations/etc/yum.repos.d/nexus.repo
+
+    1.2. Copy Configuration file to each server
+
+    - at ansible Server
+
+          cat <<EOF> ~/ansible-playbooks/initialize/set_yum_repo.yml
+          # set_yum_repo.yml
+          ---
+          - hosts: master:worker:ingress:infra
+            become: true
+            tasks:
+              - name: copy airgap YUM Repo File
+                copy:
+                  src: ~/configurations/etc/yum.repos.d/nexus.repo
+                  dest: /etc/yum.repos.d/nexus.repo
+          EOF
+
+          cat ~/ansible-playbooks/initialize/set_yum_repo.yml
+
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/set_yum_repo.yml
+  
+2. Install Container Runtime (containerd)
+
+    2.1. Create configuration files for containerd
+    - prepare at ansible server
 
           mkdir -p ~/configurations/etc/modules-load.d/
 
@@ -18,14 +58,14 @@
           EOF
           cat ~/configurations/etc/modules-load.d/k8s.conf
 
-          mkdir -p ~/configurations//etc/sysctl.d/
+          mkdir -p ~/configurations/etc/sysctl.d/
 
-          cat <<EOF | tee ~/configurations//etc/sysctl.d/99-kubernetes-cri.conf
+          cat <<EOF | tee ~/configurations/etc/sysctl.d/99-kubernetes-cri.conf
           net.bridge.bridge-nf-call-iptables  = 1
           net.ipv4.ip_forward                 = 1
           net.bridge.bridge-nf-call-ip6tables = 1
           EOF          
-          cat ~/configurations//etc/sysctl.d/99-kubernetes-cri.conf
+          cat ~/configurations/etc/sysctl.d/99-kubernetes-cri.conf
 
           cat <<EOF | tee ~/configurations/etc/sysctl.d/k8s.conf
           net.bridge.bridge-nf-call-ip6tables = 1
@@ -33,11 +73,12 @@
           EOF
           cat ~/configurations/etc/sysctl.d/k8s.conf
 
-    - copy
+    2.2. Copy CRI configuration to each server
+    - with ansible plyabooks
 
           mkdir -p ~/ansible-playbooks/containerd/
 
-          cat <<EOF> ~/ansible-playbooks/containerd/base_for_containerd.yml
+          cat <<EOF> ~/ansible-playbooks/containerd/base_for_containerd.yml          
           # base_for_containerd.yml
           ---
           - hosts: master:worker:ingress:infra
@@ -63,7 +104,8 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/containerd/base_for_containerd.yml
 
-    - install containerd
+    2.3. Install containerd
+    - with ansible plyabooks
 
           cat <<EOF> ~/ansible-playbooks/containerd/install_containerd.yml
           # install_containerd.yml
@@ -82,8 +124,8 @@
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/containerd/install_containerd.yml
 
 
-
-    - Modity Containerd Configuration File
+    2.4 Modity Containerd Configuration File
+    - with ansible plyabooks
 
           cat <<EOF> ~/ansible-playbooks/containerd/modify_containerd_configuration.yml
           # modify_containerd_configuration.yml
@@ -105,7 +147,7 @@
               - name: delete Nexus String in file
                 lineinfile:
                   path: /etc/containerd/config.toml
-                  regexp: 'https://registry-1.docker.io'
+                  regexp: 'https:/registry-1.docker.io'
                   state: absent
               - name: insertafter Nexus String in file 6
                 lineinfile:
@@ -116,8 +158,9 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."${NEXUS_0}:5001"'
-                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for ${NEXUS_0}:5001'                  
+                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for ${NEXUS_0}:5001'                  
               - name: insertafter Nexus String in file 4
+                
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."docker.io"'
@@ -126,9 +169,10 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."quay.io"'
-                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for qauy.io'                  
+                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for qauy.io'                  
               - name: insertafter Nexus String in file 2
                 lineinfile:
+                  
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."docker.io"'
                   line: '        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]'
@@ -136,24 +180,28 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."k8s.gcr.io"'
-                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for k8s.gcr.io'
+                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for k8s.gcr.io'
               - name: insertafter Nexus String in file 1
                 lineinfile:
+                  
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."docker.io"'
-                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for docker.io'         
+                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for docker.io'         
           EOF
 
           cat ~/ansible-playbooks/containerd/modify_containerd_configuration.yml
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/containerd/modify_containerd_configuration.yml
 
-
+    2.5 Start Containerd
+    - with ansible plyabooks
+          
           cat <<EOF> ~/ansible-playbooks/containerd/start_containerd.yml
-          # install_containerd.yml
+          # start_containerd.yml
           ---
           - hosts: master:worker:ingress:infra
             become: true
+            
             tasks:
               - name: start containerd
                 command: 
@@ -168,17 +216,15 @@
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/containerd/start_containerd.yml
 
          
+3. Install Kubernetes package
 
+    3.1 Setup base configuration for Kubernetes
+    - with ansible plyabooks
 
-    - d
+          mkdir -p ~/ansible-playbooks/kubernetes/
 
-
-
-
-          mkdir -p ~/ansible-playbooks/kubernets/
-
-          cat <<EOF> ~/ansible-playbooks/kubernets/base_for_kubernets.yml
-          # base_for_kubernets.yml
+          cat <<EOF> ~/ansible-playbooks/kubernetes/base_for_kubernetes.yml
+          # base_for_kubernetes.yml
           ---
           - hosts: master:worker:ingress:infra
             become: true
@@ -203,11 +249,12 @@
                 command: sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
           EOF
 
-          cat ~/ansible-playbooks/kubernets/base_for_kubernets.yml
+          cat ~/ansible-playbooks/kubernetes/base_for_kubernetes.yml
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernets/base_for_kubernets.yml
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/base_for_kubernetes.yml
 
-    - install containerd
+    3.2 Install Kubernetes
+    - with ansible plyabooks    
 
           cat <<EOF> ~/ansible-playbooks/containerd/install_kubernetes.yml
           # install_kubernetes.yml
@@ -232,7 +279,8 @@
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/containerd/install_kubernetes.yml
 
 
-    - d
+    3.3. Systemd Configuration
+    - with ansible plyabooks    
 
           mkdir -p ~/ansible-playbooks/kubernetes/
 
@@ -259,33 +307,27 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/modify_systemd_configuration.yml
 
+4. Restart kubelet
 
-
----
-- d
-
-    d
-    - d
-
-
-          mkdir -p ~/ansible-playbooks/correction/
-          
-          cat <<EOF> ~/ansible-playbooks/correction/correct_systemd_configuration.yml
-          # correct_systemd_configuration.yml
+    4.1  Restart kubelet
+    - with ansible plyabooks 
+    
+          cat <<EOF> ~/ansible-playbooks/kubernetes/restart_kubelet.yml
+          # restart_kubelet.yml
           ---
           - hosts: master:worker:ingress:infra
             become: true
             tasks:
-              - name: insert original
-                lineinfile:
-                  path: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
-                  backrefs: true
-                  regexp: "^(.*/usr/bin/kubelet.*)$"
-                  line: '\1 \$KUBELET_KUBECONFIG_ARGS \$KUBELET_CONFIG_ARGS \$KUBELET_KUBEADM_ARGS \$KUBELET_EXTRA_ARGS' 
+              - name: daemon-reload
+                command: systemctl daemon-reload
+              - name: start kubelet
+                command: systemctl start kubelet
+              - name: enable kubelet
+                command: systemctl enable kubelet            
           EOF
-          
-          cat ~/ansible-playbooks/correction/correct_systemd_configuration.yml
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/correction/correct_systemd_configuration.yml
-          
-    - done
+          cat ~/ansible-playbooks/kubernetes/restart_kubelet.yml
+
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/restart_kubelet.yml
+
+---

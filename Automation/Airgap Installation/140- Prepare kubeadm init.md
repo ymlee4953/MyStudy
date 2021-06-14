@@ -1,34 +1,12 @@
-2. init 
-  -  
-    - 
-      -  
+# **140. Prepare kubeadm init**
 
-          cat <<EOF> ~/ansible-playbooks/kubernetes/restart_kubelet.yml
-          # restart_kubelet.yml
-          ---
-          - hosts: master:worker:ingress:infra
-            become: true
-            tasks:
-              - name: daemon-reload
-                command: systemctl daemon-reload
-              - name: start kubelet
-                command: systemctl start kubelet
-              - name: enable kubelet
-                command: systemctl enable kubelet            
-          EOF
+1. Copy Etcd cert to master-1
 
-          cat ~/ansible-playbooks/kubernetes/restart_kubelet.yml
-
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/restart_kubelet.yml
-          
-- s 
-    - s
-
-          d
-
-    - d
+    1.1. Fetch etcd cert to Bastion
+    - with ansible playbook
 
           cat <<EOF> ~/ansible-playbooks/kubernetes/fetch_etcd_cert_file.yml
+          # fetch_etcd_cert_file.yml
           - hosts: ETCD-1
             become: true
             tasks:
@@ -45,10 +23,11 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/fetch_etcd_cert_file.yml
 
-      
-    - d
+    1.2. Copy etcd cert to master-1
+    - with ansible playbook
 
           cat <<EOF> ~/ansible-playbooks/kubernetes/copy_etcd_cert_file.yml
+          # copy_etcd_cert_file.yml
           - hosts: MASTER-1
             become: true
             tasks: 
@@ -76,12 +55,10 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/kubernetes/copy_etcd_cert_file.yml
 
-- s
+2. Create the kubeadm-config.yaml
 
-    - s 
-
-
-
+    2.1. Generate the Configuration file for Kubernetes cluster
+    - at the ansible server
 
           mkdir -p ~/configurations/master-1/
 
@@ -119,11 +96,11 @@
 
           cat ~/configurations/master-1/kubeadm-config.yaml
 
-- d 
-
-    - d 
+    2.2. Copy the Configuration file
+    - From the ansible server to the master-1
 
           cat <<EOF> ~/ansible-playbooks/kubernetes/copy_kubeadm_config_file.yml
+          # copy_kubeadm_config_file.yml
           - hosts: MASTER-1
             become: true
             tasks: 

@@ -6,9 +6,9 @@
 
     - at ansible server
 
-          mkdir -p ~/configurations/etc/yum.repos.d
+          mkdir -p $HOME/configurations/etc/yum.repos.d
 
-          cat <<EOF> ~/configurations/etc/yum.repos.d/nexus.repo
+          cat <<EOF> $HOME/configurations/etc/yum.repos.d/nexus.repo
 
           [nexus]
           name=Nexus Proxy
@@ -18,13 +18,13 @@
 
           EOF
 
-          cat ~/configurations/etc/yum.repos.d/nexus.repo
+          cat $HOME/configurations/etc/yum.repos.d/nexus.repo
 
     1.2. Copy Configuration file to each server
 
     - at ansible Server
 
-          cat <<EOF> ~/ansible-playbooks/initialize/set_yum_repo.yml
+          cat <<EOF> $HOME/ansible-playbooks/initialize/set_yum_repo.yml
           # set_yum_repo.yml
           ---
           - hosts: etcd:master:worker:ingress:infra:lb*
@@ -32,13 +32,13 @@
             tasks:
               - name: copy airgap YUM Repo File
                 copy:
-                  src: ~/configurations/etc/yum.repos.d/nexus.repo
+                  src: $HOME/configurations/etc/yum.repos.d/nexus.repo
                   dest: /etc/yum.repos.d/nexus.repo
           EOF
 
-          cat ~/ansible-playbooks/initialize/set_yum_repo.yml
+          cat $HOME/ansible-playbooks/initialize/set_yum_repo.yml
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/set_yum_repo.yml
+          ansible-playbook -i k8s-cluster-hosts $HOME/ansible-playbooks/initialize/set_yum_repo.yml
   
   
   

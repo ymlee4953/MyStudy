@@ -1,4 +1,4 @@
-# **120 - Setup LB-1**
+# **120. Setup LB-1**
 
 1. Install haproxy
   

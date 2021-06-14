@@ -1,22 +1,11 @@
-# **001 - Ansible Setup**
+# **110. External etcd Installation**
 
-## **OS update**
-- update CentOS to latest
-  d
 
-## **Environment**
-- d
-  - d
+1. Copy etcd files from Bastion to etcd Servers
 
-## **Steps** 
-
-### **Step 1: OS update**
--  update CentOS to latest
-  - d
-    - f
-
-         
-    - Done
+    1.1. Copy etcdadm and etcd installation files from Bastion
+    
+    - create ansible playbook
 
           mkdir -p ~/ansible-playbooks/etcd/
 
@@ -58,17 +47,12 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/copy_etcdadm.yml
 
-    - execute copy
+2. Initialize etcd cluster 
+    
+    2.1. "Run etcdadm init"
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/copy_etcdadm.yml
-         
-
-
-2. init 
-  -  
-    - 
-      -  
-
+    - with ansible playbook
+    
           cat <<EOF> ~/ansible-playbooks/etcd/etcdadm_init.yml
           # etcdadm_init.yml
           ---
@@ -83,16 +67,13 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/etcdadm_init.yml
 
-2. init 
-  -  
-    - 
-      - check at the etcd server
-         
-          /opt/bin/etcdctl.sh member list -w table
 
-3. copy cert
+3. Copy cert files
 
-    -
+    3.1.from ETCD-1 to ETCD-2,3
+
+    - with ansible playbook
+
           mkdir -p ~/files
 
           cat <<EOF> ~/ansible-playbooks/etcd/copy_etcd_cert.yml
@@ -124,16 +105,12 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/copy_etcd_cert.yml
 
-    - execute copy
 
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/copy_etcdadm.yml
-         
+4. Build ETCD cluster
 
+    4.1 Join to the ECDD cluster
 
-3. join cert
-
-    -
-          mkdir -p ~/files
+    - with ansible playbook
 
           cat <<EOF> ~/ansible-playbooks/etcd/etcdadm_join.yml
           # etcdadm_join.yml
@@ -148,3 +125,14 @@
           cat ~/ansible-playbooks/etcd/etcdadm_join.yml
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/etcd/etcdadm_join.yml
+
+
+5. Check the status (it can be skipped)
+
+    5.1. Check the status of creation
+
+    - check at the etcd server
+         
+          /opt/bin/etcdctl.sh member list -w table
+
+---
