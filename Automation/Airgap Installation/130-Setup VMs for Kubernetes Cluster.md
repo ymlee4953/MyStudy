@@ -147,7 +147,7 @@
               - name: delete Nexus String in file
                 lineinfile:
                   path: /etc/containerd/config.toml
-                  regexp: 'https:/registry-1.docker.io'
+                  regexp: 'https://registry-1.docker.io'
                   state: absent
               - name: insertafter Nexus String in file 6
                 lineinfile:
@@ -158,7 +158,7 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."${NEXUS_0}:5001"'
-                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for ${NEXUS_0}:5001'                  
+                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for ${NEXUS_0}:5001'                  
               - name: insertafter Nexus String in file 4
                 
                 lineinfile:
@@ -169,7 +169,7 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."quay.io"'
-                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for qauy.io'                  
+                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for qauy.io'                  
               - name: insertafter Nexus String in file 2
                 lineinfile:
                   
@@ -180,13 +180,13 @@
                 lineinfile:
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."k8s.gcr.io"'
-                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for k8s.gcr.io'
+                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for k8s.gcr.io'
               - name: insertafter Nexus String in file 1
                 lineinfile:
                   
                   path: /etc/containerd/config.toml
                   insertafter: 'registry.mirrors."docker.io"'
-                  line: '          endpoint = ["http:/${NEXUS_0}:5001"]      # for docker.io'         
+                  line: '          endpoint = ["http://${NEXUS_0}:5001"]      # for docker.io'         
           EOF
 
           cat ~/ansible-playbooks/containerd/modify_containerd_configuration.yml
@@ -205,7 +205,7 @@
             tasks:
               - name: start containerd
                 command: 
-                  systemctl restart containerd
+                  systemctl start containerd
               - name: enable containerd
                 command: 
                   systemctl enable containerd
