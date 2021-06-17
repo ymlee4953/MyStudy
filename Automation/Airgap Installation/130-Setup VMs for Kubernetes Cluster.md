@@ -71,12 +71,14 @@
           cat <<EOF | tee ~/configurations/etc/modules-load.d/containerd.conf
           overlay
           br_netfilter
-          EOF          
+          EOF
+
           cat ~/configurations/etc/modules-load.d/containerd.conf
 
           cat <<EOF | tee ~/configurations/etc/modules-load.d/k8s.conf
           br_netfilter
           EOF
+
           cat ~/configurations/etc/modules-load.d/k8s.conf
 
           mkdir -p ~/configurations/etc/sysctl.d/
@@ -85,13 +87,15 @@
           net.bridge.bridge-nf-call-iptables  = 1
           net.ipv4.ip_forward                 = 1
           net.bridge.bridge-nf-call-ip6tables = 1
-          EOF          
+          EOF
+
           cat ~/configurations/etc/sysctl.d/99-kubernetes-cri.conf
 
           cat <<EOF | tee ~/configurations/etc/sysctl.d/k8s.conf
           net.bridge.bridge-nf-call-ip6tables = 1
           net.bridge.bridge-nf-call-iptables = 1
           EOF
+          
           cat ~/configurations/etc/sysctl.d/k8s.conf
 
     2.2. Copy CRI configuration to each server
