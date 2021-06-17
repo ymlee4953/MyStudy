@@ -61,6 +61,28 @@
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
 
 
+    1.4. Install Linux Netcat to each K8s master server
+
+    - at ansible Server
+
+          cat <<EOF> ~/ansible-playbooks/initialize/yum_install_nc.yml
+          # yum_install_nc.yml
+          ---
+          - hosts: master
+            become: true
+            tasks:
+              - name: yum install nc
+                yum:
+                  name:
+                    - nc
+          EOF
+
+          cat ~/ansible-playbooks/initialize/yum_install_nc.yml
+
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_nc.yml
+
+
+
 2. Install Container Runtime (containerd)
 
     2.1. Create configuration files for containerd
@@ -95,7 +117,7 @@
           net.bridge.bridge-nf-call-ip6tables = 1
           net.bridge.bridge-nf-call-iptables = 1
           EOF
-          
+
           cat ~/configurations/etc/sysctl.d/k8s.conf
 
     2.2. Copy CRI configuration to each server

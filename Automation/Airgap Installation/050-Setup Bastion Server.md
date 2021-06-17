@@ -90,3 +90,23 @@
           curl https://docs.projectcalico.org/manifests/calico-typha.yaml -o calico-typha.yaml
 
           mv ./calico*.yaml  ~/calico
+
+
+---
+## **For Kubesphere**
+
+6. Kubesphere
+    - d
+
+    5.1 Download and copy the yaml file for the kubesphere
+    - Download the yaml File
+    - **At the Bastion server**
+     
+          mkdir -p ~/kubesphere
+
+          cd ~/kubesphere
+
+          curl -L -O https://github.com/kubesphere/ks-installer/releases/download/v3.1.0/cluster-configuration.yaml
+          curl -L -O https://github.com/kubesphere/ks-installer/releases/download/v3.1.0/kubesphere-installer.yaml
+
+          cd ~/
