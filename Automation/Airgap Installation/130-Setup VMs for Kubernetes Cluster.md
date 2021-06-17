@@ -39,7 +39,28 @@
           cat ~/ansible-playbooks/initialize/set_yum_repo.yml
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/set_yum_repo.yml
-  
+
+    1.3. Install NFS Client to each K8s server
+
+    - at ansible Server
+
+          cat <<EOF> ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
+          # yum_install_NFS_utils.yml
+          ---
+          - hosts: master:worker:ingress:infra
+            become: true
+            tasks:
+              - name: yum install NFS utils
+                yum:
+                  name:
+                    - nfs-utils
+          EOF
+
+          cat ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
+
+          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
+
+
 2. Install Container Runtime (containerd)
 
     2.1. Create configuration files for containerd
