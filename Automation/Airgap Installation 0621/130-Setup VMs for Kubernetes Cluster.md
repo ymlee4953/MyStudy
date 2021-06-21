@@ -27,7 +27,7 @@
           cat <<EOF> ~/ansible-playbooks/initialize/set_yum_repo.yml
           # set_yum_repo.yml
           ---
-          - hosts: master:worker:ingress:infra
+          - hosts: master:worker
             become: true
             tasks:
               - name: copy airgap YUM Repo File
@@ -47,13 +47,16 @@
           cat <<EOF> ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
           # yum_install_NFS_utils.yml
           ---
-          - hosts: master:worker:ingress:infra
+          - hosts: master:worker
             become: true
             tasks:
               - name: yum install NFS utils
                 yum:
                   name:
                     - nfs-utils
+              - name : mount  NFS storage # ibm cloud file storage 
+                command : mount -t nfs -o <options> <host:mount_point> /mnt
+
           EOF
 
           cat ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
