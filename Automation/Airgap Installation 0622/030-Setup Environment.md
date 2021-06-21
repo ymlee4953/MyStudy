@@ -12,32 +12,31 @@
     - cluster information and server IP
     - At the ansible Server
 
-          export K8S_CLUSTER_NAME=k8s_cluster_a0
-          export CLUSTER_DOMAIN=a0.sj3.k8s.demo.ymlee
+          export K8S_CLUSTER_NAME=k8s_cluster_a1
+          export CLUSTER_DOMAIN=a1.sj3.k8s.demo.ymlee
           export K8S_VERSION=v1.20.5
           export POD_SUBNET=192.168.0.0/16
           export SERVICE_SUBNET=20.96.0.0/16
 
-          export ETCD_1=10.168.180.143
-          export ETCD_2=10.168.180.135
-          export ETCD_3=10.168.180.200
+          export ETCD_1=10.168.180.212
+          export ETCD_2=10.168.180.160
+          export ETCD_3=10.168.180.148
 
-          export LB_1=10.168.180.220
+          export LB_1=10.168.180.205
 
-          export MASTER_1=10.168.180.195
-          export MASTER_2=10.168.180.186
-          export MASTER_3=10.168.180.173
+          export MASTER_1=10.168.180.254
+          export MASTER_2=10.168.180.169
+          export MASTER_3=10.168.180.235
 
-          export WORKER_1=10.168.180.162
-          export WORKER_2=10.168.180.137
-          export WORKER_3=10.168.180.170
+          export WORKER_1=10.168.180.191
+          export WORKER_2=10.168.180.178
+          export WORKER_3=10.168.180.131
+
+          export NFS_0=10.168.180.158
 
           export BASTION_0=10.168.180.175
           export NEXUS_0=10.168.180.250
-          
-          export FILE_STORAGE_HOST=fsf-sjc0301h-fz.adn.networklayer.com
-          export FILE_STORAGE_MOUNT_POINT=fsf-sjc0301h-fz.adn.networklayer.com:/IBM02SEV1578069_1/data01
-          export FILE_STORAGE_PATH=/IBM02SEV1578069_1/data01
+
 
 2. Create Directoy for new Cluster
 
@@ -79,6 +78,7 @@
           [shared]
           BASTION-0 ansible_host=${BASTION_0}
           NEXUS-0 ansible_host=${NEXUS_0}
+          NFS-0 ansible_host=${NFS_0}
 
           [local]
           control ansible_connection=local

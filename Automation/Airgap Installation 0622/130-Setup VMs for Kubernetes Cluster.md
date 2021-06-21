@@ -63,6 +63,18 @@
                 yum:
                   name:
                     - nfs-utils
+              - name : make directory for mount
+                ansible.builtin.file:
+                  path: /mnt/data
+                  state: directory
+                  mode: '0755'
+              - name : Mount an NFS volume
+                mount:
+                  src: ${HOST_MOUNT_POINT}
+                  path: /mnt/data
+                  opts: sec=sys,nfsvers=4.1
+                  state: mounted
+                  fstype: nfs                
           EOF
 
           cat ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
