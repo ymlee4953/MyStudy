@@ -21,7 +21,9 @@
 - ref: https://access.redhat.com/documentation/en-us/red_hat_gluster_storage/3.1/html/administration_guide/ch06s02
 - ref: https://bryan.wiki/283
 - ref: https://computingforgeeks.com/setup-glusterfs-storage-with-heketi-on-centos-server/
-
+- https://www.programmersought.com/article/76165673726/
+- https://asciinema.org/a/262670
+- https://github.com/heketi/heketi/blob/master/docs/api/api.md
 
 
       yum install centos-release-gluster -y
