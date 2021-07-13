@@ -166,6 +166,20 @@
               server master-1 ${MASTER_1}:6443 check fall 3 rise 2
               server master-2 ${MASTER_2}:6443 check fall 3 rise 2
               server master-3 ${MASTER_3}:6443 check fall 3 rise 2
+
+          frontend ksconsole
+              bind *:30880
+              mode tcp
+              option tcplog
+              default_backend ksconsole-backend
+
+          backend ksconsole-backend
+              mode tcp
+              option tcp-check
+              balance roundrobin
+              server master-1 ${MASTER_1}:30880 check fall 3 rise 2
+              server master-2 ${MASTER_2}:30880 check fall 3 rise 2
+              server master-3 ${MASTER_3}:30880 check fall 3 rise 2              
           EOF
 
           cat ~/configurations/LB-1/etc/haproxy/haproxy.cfg

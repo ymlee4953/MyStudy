@@ -40,52 +40,7 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/set_yum_repo.yml
 
-    1.3. Install NFS Client to each K8s server
-
-    - at ansible Server
-    - get host ip of file storage
-
-          host ${FILE_STORAGE_HOST}
-
-          export
-
-    - mount file storage
-
-    - reference: https://cloud.ibm.com/docs/vpc?topic=vpc-file-storage-mount-centos&locale=ko
-
-          cat <<EOF> ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
-          # yum_install_NFS_utils.yml
-          ---
-          - hosts: master:worker
-            become: true
-            tasks:
-              - name: yum install NFS utils
-                yum:
-                  name:
-                    - nfs-utils
-              - name : make directory for mount
-                ansible.builtin.file:
-                  path: /mnt/data
-                  state: directory
-                  mode: '0755'
-              - name : Mount an NFS volume
-                mount:
-                  src: ${HOST_MOUNT_POINT}
-                  path: /mnt/data
-                  opts: sec=sys,nfsvers=4.1
-                  state: mounted
-                  fstype: nfs                
-          EOF
-
-          cat ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
-
-          ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_NFS_utils.yml
-
-        
-
-
-
-    1.4. Install Linux Netcat to each K8s master server
+    1.3. Install Linux Netcat to each K8s master server
 
     - at ansible Server
 
@@ -383,7 +338,7 @@
           cat <<EOF> ~/ansible-playbooks/kubernetes/restart_kubelet.yml
           # restart_kubelet.yml
           ---
-          - hosts: master:worker:ingress:infra
+          - hosts: master:worker
             become: true
             tasks:
               - name: daemon-reload

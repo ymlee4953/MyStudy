@@ -35,6 +35,11 @@
           export BASTION_0=10.168.180.172
           export NEXUS_0=10.168.180.249
 
+          export GLUSTERFS_1=10.168.180.142
+          export GLUSTERFS_2=10.168.180.202
+          export GLUSTERFS_3=10.168.180.220
+
+
 
 2. Create Directoy for new Cluster
 
@@ -76,7 +81,9 @@
           [shared]
           BASTION-0 ansible_host=${BASTION_0}
           NEXUS-0 ansible_host=${NEXUS_0}
-          NFS-0 ansible_host=${NFS_0}
+          GLUSTERFS-1 ansible_host=${GLUSTERFS_1}
+          GLUSTERFS-2 ansible_host=${GLUSTERFS_2}
+          GLUSTERFS-3 ansible_host=${GLUSTERFS_3}
 
           [local]
           control ansible_connection=local
