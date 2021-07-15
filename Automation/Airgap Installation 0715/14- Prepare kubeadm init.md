@@ -53,6 +53,8 @@
 
           cat ~/configurations/master-1/kubeadm-config.yaml
 
+          cp ~/configurations/master-1/kubeadm-config.yaml ~/configurations/master-1/kubeadm-config-${K8S_CLUSTER_SHORT}.yaml
+
     2.2. Copy the Configuration file
     - From the ansible server to the master-1
 

@@ -9,6 +9,18 @@
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_nc.yml
 
+        -
+
+          echo nc -v ${LB_1} 6443
+
+          ssh root@${MASTER_1}
+        -
+        
+          # nc -v ${LB_1} 6443
+
+          exit
+
+
     1.2. Copy Configuration file to each server
 
     - at ansible Server

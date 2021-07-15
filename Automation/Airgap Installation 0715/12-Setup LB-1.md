@@ -57,6 +57,8 @@
           EOF
 
           cat ~/configurations/LB-1/etc/haproxy/haproxy.cfg
+          
+          cp ~/configurations/LB-1/etc/haproxy/haproxy.cfg configurations/LB-1/etc/haproxy/haproxy-${K8S_CLUSTER_SHORT}.cfg
 
     1.5. Start haproxy
 

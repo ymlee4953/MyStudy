@@ -54,6 +54,9 @@
 
     - check at the etcd server
          
+          ssh root@${ETCD_1}
+
           /opt/bin/etcdctl.sh member list -w table
 
+          exit
 ---
