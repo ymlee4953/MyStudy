@@ -1,24 +1,64 @@
 # **130. Setup VMs for Kubernetes Cluster**
 
+- Air-Gap Environment
+- Install and configure ...
+  - Container Runtime Interface (CRI) : Containerd
+  - Kubernetes files : kubelet, kubeadm, kubectl and image for kubernetes
+- Get the installation files and package from the ansible/nexus server
+- Target K8s Cluster
+  - Considering 3 External Etcd nodes 
+  - 3 Master nodes, 3+ worker nodes, 3 Router nodes, (2 infra nodes)
+  
+    | Server | Network | vCPU (core) | RAM (GB) | Internal Disk (GB) | external Disk (GB) |
+    | :---: | :---: | :---: | :---: | :---: | :---: |
+    | master-1 | Private Only | 4 | 16 | 100 | - |
+    | master-2 | Private Only | 4 | 16 | 100 | - |
+    | master-3 | Private Only | 4 | 16 | 100 | - |
+    | worker-1 | Private Only | 4 | 16 | 100 | - |
+    | worker-2 | Private Only | 4 | 16 | 100 | - |
+    | worker-3 | Private Only | 4 | 16 | 100 | - |
+    | router-1 | Private Only | 4 | 16 | 100 | - |
+    | router-2 | Private Only | 4 | 16 | 100 | - |
+    | router-3 | Private Only | 4 | 16 | 100 | - |
+    | infra-1 | Private Only | 4 | 16 | 100 | - |
+    | infra-2 | Private Only | 4 | 16 | 100 | - |
+
+- Containerd Version : Latest  
+- Kubernetes Version : v1.20.5
+
+---
+
 1. Setup Configuration
 
+    1.1. Install Linux Netcat to each K8s master server
 
-    1.4. Install Linux Netcat to each K8s master server
-
-    - at ansible Server
+    - To check the Load Balacer Connectivity
 
           ansible-playbook -i k8s-cluster-hosts ~/ansible-playbooks/initialize/yum_install_nc.yml
 
-        -
+    - make command script for the master server and ssh log in to the master-1
 
           echo nc -v ${LB_1} 6443
 
           ssh root@${MASTER_1}
-        -
+
+      - Check the Result : (Sample)
+
+            [root@ansible-0 ~]# echo nc -v ${LB_1} 6443
+            nc -v xxx.xxx.xxx.xxx 6443
         
-          # nc -v ${LB_1} 6443
+    - Verify the Load Balacer Connectivity
+        
+          nc -v xxx.xxx.xxx.xxx 6443
 
           exit
+
+      - Check the Result : (Sample)
+
+            Ncat: Version 7.50 ( https://nmap.org/ncat )
+            Ncat: Connected to xxx.xxx.xxx.xxx:6443.
+
+
 
 
     1.2. Copy Configuration file to each server

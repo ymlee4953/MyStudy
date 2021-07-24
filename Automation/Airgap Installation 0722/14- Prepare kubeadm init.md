@@ -1,5 +1,14 @@
-# **140. Prepare kubeadm init**
+# **14. Prepare kubeadm init**
 
+- Create kubeadm-config.yaml for kubeadm init
+  - Set Cluster Name
+  - Kubernetes Version : v1.20.5
+  - Set podSubnet 
+  - Set serviceSubnet  
+  - Set apiServer : LoadBalancer
+  - Set etcd : External 
+  
+---
 1. Copy Etcd cert to master-1
 
     1.1. Fetch etcd cert to Bastion

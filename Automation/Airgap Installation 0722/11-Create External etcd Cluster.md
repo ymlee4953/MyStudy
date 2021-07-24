@@ -1,5 +1,19 @@
 # **11. External etcd Installation**
 
+- Air-Gap Environment
+- etcdadm was made and ready in the Bastion server
+- Get the installation files and package from the Bation(ansible) server
+- Target External Cluster
+  - 3 external etcd nodes 
+
+    | Server | Network | vCPU (core) | RAM (GB) | Internal Disk (GB) | external Disk (GB) |
+    | :---: | :---: | :---: | :---: | :---: | :---: |
+    | etcd-1 | Private Only | 2 | 4 | 25 | - |
+    | etcd-2 | Private Only | 2 | 4 | 25 | - | 
+    | etcd-3 | Private Only | 2 | 4 | 25 | - |
+
+- ETCD version : v3.5.0
+---
 
 1. Copy etcd files from Bastion to etcd Servers
 
@@ -59,4 +73,17 @@
           /opt/bin/etcdctl.sh member list -w table
 
           exit
+
+      - Check the Result : (Sample)          
+
+            [root@etcd-1 ~]# /opt/bin/etcdctl.sh member list -w table
+            +------------------+---------+--------------------------+-----------------------------+-----------------------------+------------+
+            |        ID        | STATUS  |           NAME           |         PEER ADDRS          |        CLIENT ADDRS         | IS LEARNER |
+            +------------------+---------+--------------------------+-----------------------------+-----------------------------+------------+
+            |  f3a06e4a49d7db2 | started | etcd-2.1.b.dev.k8s.ymlee | https://10.178.165.143:2380 | https://10.178.165.143:2379 |      false |
+            | d9a17bf3668bb06f | started | etcd-3.1.b.dev.k8s.ymlee | https://10.178.165.168:2380 | https://10.178.165.168:2379 |      false |
+            | dada4b40a8aea48b | started | etcd-1.1.b.dev.k8s.ymlee | https://10.178.165.139:2380 | https://10.178.165.139:2379 |      false |
+            +------------------+---------+--------------------------+-----------------------------+-----------------------------+------------+
+            [root@etcd-1 ~]#
+
 ---

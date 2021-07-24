@@ -1,5 +1,22 @@
 # **12. Setup LB-1**
 
+- Air-Gap Environment
+- Get the installation files and package from the Bation(ansible) server
+- HA Proxy Server act as the Load Balacer for the K8s Cluster (In the IBM Cloud)
+- LB-1 for the Control Plane, LB-2 for the ingress service (LB-2 is optional)
+- Each LB-1,2 have Public IP for internet connection
+- Target HA Proxy Server Environment 
+  - 1 HA Proxy node for each LB-1 and LB-2 (No Duplication)
+
+    | Server | Network | vCPU (core) | RAM (GB) | Internal Disk (GB) | external Disk (GB) |
+    | :---: | :---: | :---: | :---: | :---: | :---: |
+    | LB-1 | Pulbic and Private | 2 | 4 | 25 | - |
+    | LB-2 | Pulbic and Private | 2 | 4 | 25 | - |     
+
+- HA Proxy Version : v1.7.8  
+
+---
+
 1. Install haproxy
   
     1.1 install Base package for haproxy
