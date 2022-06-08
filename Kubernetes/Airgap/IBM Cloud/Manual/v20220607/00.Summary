@@ -1,0 +1,10 @@
+
+
+export BASTION-PUB=10.xxx.xxx.xxx
+export BASTION-PRV=10.xxx.xxx.xxx
+
+export NEXUS-PUB=10.xxx.xxx.xxx
+export NEXUS-PRV=10.xxx.xxx.xxx
+
+
+
